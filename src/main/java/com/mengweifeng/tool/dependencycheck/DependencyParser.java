@@ -23,6 +23,9 @@ public abstract class DependencyParser {
             if (line == null) {
                 break;
             }
+            if (!isDependencyLine(line)) {
+                continue;
+            }
             Dependency dependency = parseDependencyLine(line);
             if (dependency.getLevel() == currentLevel) {
             } else if (dependency.getLevel() > currentLevel) {
@@ -30,6 +33,7 @@ public abstract class DependencyParser {
             } else if (dependency.getLevel() < currentLevel) {
                 parentDependency = parentDependency.getParent();
             }
+            currentLevel = dependency.getLevel();
             dependency.setParent(parentDependency);
             parentDependency.addChild(dependency);
             allDependency.add(dependency);
@@ -41,6 +45,8 @@ public abstract class DependencyParser {
             dependencies.add(dependency);
         } while (true);
     }
+
+    protected abstract boolean isDependencyLine(String dependencyLine);
 
 
     protected abstract Dependency parseDependencyLine(String dependencyLine);
